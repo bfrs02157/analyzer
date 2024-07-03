@@ -1,0 +1,177 @@
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+  redis:
+    host: localhost
+    port: 6379
+    database: 0
+    username:
+    password:
+    timeout: 60000
+    useSsl: false
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        jdbc:
+          time_zone: UTC
+    show-sql: 'false'
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: '10'
+      minimum-idle: '5'
+    url: ${MYSQL_DATASOURCE_URI}
+    username: ${MYSQL_DATASOURCE_APP_USERNAME}
+    password: ${MYSQL_DATASOURCE_APP_PASSWORD}
+  flyway:
+    enabled: 'true'
+    baseline-on-migrate: 'true'
+#    out-of-order: 'true'
+    url: ${MYSQL_DATASOURCE_URI}
+    user: ${MYSQL_DATASOURCE_FLYWAY_USERNAME}
+    password: ${MYSQL_DATASOURCE_FLYWAY_PASSWORD}
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.SecurityAutoConfiguration
+
+app:
+  serviceTag: authmaster
+  secret: ${APP_JWT_SECRET}
+  jwt-secret: "your-256-bit-secret"
+  admin-user-group-id: 763138
+  no-scope-user-group-id: 763141
+  crypto:
+    encryption:
+      rsa:
+        enabled: true
+      aes:
+        key: 'secret-key-12345'
+  session:
+    active-device-limit: 5
+    expiry:
+      authenticated-in-minutes: 1440
+      anonymous-in-days: 7
+      refresh-token-in-days: 7
+  verification:
+    otp:
+      request-limit: 4
+      failure-limit: 3
+  cache:
+    password-expiry-in-minutes: 30
+    sr-token-expiry-in-hours: 120
+  external:
+    frontend:
+      baseUri: "https://o2web-qa-01.kartrocket.in"
+      endpoints:
+        user-invitation-validation: "/user-invitation-validation?token="
+        verify-email: "/verify-email"
+        switch-apps: "/switch-apps?token="
+    authmaster:
+      baseUri: 'http://localhost:8080'
+      populate-resources:
+          endpoint: "/permission/populate"
+          enabled: true
+      secret: a26e171d926dc62a1a3b31461859b405
+    patron:
+      baseUri: ${PATRON_BASE_URI:http://patron-staging.kartrocket.in}
+      endpoints:
+        tenant-details: "/tenant"
+        tenant-details-v2: "/tenant/details"
+    shiprocket:
+      baseUri: "https://apiv2.shiprocket.in"
+      service-name: ${SR_SERVICE_NAME:authmaster-omuni2}
+      service-secret: ${SR_SERVICE_SECRET:$2a$12$uSzvja6HzojjchtePmR3le0mshRZHnYQ9LWHB1mZNSXnQxq3z7D56}
+      endpoints:
+        google-auth-callback: "/v1/auth/googlelogin"
+        validate-email: "/v1/external/omuni2/auth/check-email"
+        user-details-api-token: "/v1/external/omuni2/auth/user-details"
+        user-details-internal-token: "/v1/auth/login/user"
+        switch-token: "/v1/external/auth/omuni2/switch-token"
+        validate-mobile: "/v1/external/omuni2/auth/check-phone"
+        create-sub-user: "/v1/settings/multiuser/create"
+    sinfini:
+      enabled: true
+      baseUri: ${SINFINI_BASE_URI:http://alerts.sinfini.com/api/v3/index.php}
+      apiKey: ${SINFINI_API_KEY:Afa8f859f3f8af5f9bd92c9e8db94bd39}
+      sms:
+        method: ${SINFING_SMS_METHOD:sms}
+        sender: ${SINFINI_SMS_SENDER:SHPRKT}
+        templateId: ${SINFINI_SMS_TEMPLATE_ID:1107159921248118728}
+    kaleyra:
+      enabled: true
+      baseUri: ${KALEYRA_BASE_URI:https://api.kaleyra.io/v1}
+      senderId: ${KALEYRA_SENDER_ID:HXIN1724808889IN}
+      apiKey: ${KALEYRA_API_KEY:Aca6d903762f7aa22e3b1d392059be7cd}
+      fromNo: ${KALEYRA_FROM_NO:917217894979}
+      endpoints:
+        send-messages: "/messages"
+      whatsapp:
+        otp-template-name: ${KALEYRA_WHATSAPP_OTP_TEMPLATE_NAME:o2_verification}
+        channel: ${KALEYRA_WHATSAPP_CHANNEL:whatsapp}
+        callBackUri: ${KALEYRA_CALL_BACK_URL:https://apiv2.shiprocket.in/v1/webhook/whatsapp}
+    netcore:
+      enabled: true
+      baseUri: ${NETCORE_BASE_URI:https://emailapi.netcorecloud.net}
+      apiKey: ${NETCORE_API_KEY:f8fb86901e186aa15a07e22a3de6b022}
+      fromEmail: "info@mail.shiprocket.in"
+      fromName: "Shiprocket"
+      endpoints:
+        send-mail: "/v5.1/mail/send"
+    google:
+      oauth-client-id: "415578535638-taan01jiogdj99gb3g4bdn4friqeuer8.apps.googleusercontent.com"
+    shopify:
+      baseUri: "https://admin.shopify.com"
+      client-id: "736a0bed43740cf087af6c4e4391e591"
+      client-secret: "fe4636917b130fec444c614077f6d579"
+      oauth-callback-uri: "https://o2web-qa-01.kartrocket.in/login"
+      oauth-app-scopes: "read_orders,write_orders,read_discounts,read_fulfillments,write_fulfillments,read_inventory,write_inventory,read_legal_policies,read_locales,read_merchant_managed_fulfillment_orders,write_merchant_managed_fulfillment_orders,read_products,read_shipping,write_shipping,read_returns,write_returns"
+      endpoints:
+        oauth-authorize: "/oauth/authorize"
+        oauth-access-token: "/admin/oauth/access_token"
+
+management:
+  endpoints:
+    health:
+      enabled: true
+      show-details: always
+      sensitive: false
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+    web:
+      exposure:
+        include: health,info,metrics,prometheus,logger,traces,beans,caches,info,conditions,configprops,env,heapdump,threaddump,metrics,refresh,features
+  health:
+    binders:
+      enabled: true
+    db:
+      enabled: true
+    defaults:
+      enabled: true
+    diskspace:
+      enabled: true
+    elasticsearch:
+      enabled: false
+    kafka:
+      enabled: true
+    mongo:
+      enabled: true
+
+  metrics:
+    export:
+      prometheus:
+      enabled: true
+    tags:
+      applicationName: authmaster
+      environment: dev
+      name: authmaster
+      owner: Pawan Kumar
+      team: core
+    web:
+      server:
+        request:
+          autotime:
+            percentiles: 0.50,0.75,0.90,0.95,0.99

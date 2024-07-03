@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: authmaster
+  profiles:
+    active: ${ACTIVE_PROFILE:dev}
